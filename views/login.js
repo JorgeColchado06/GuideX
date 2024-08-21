@@ -1,9 +1,7 @@
-
 import { View, Text, SafeAreaView, Image, TouchableHighlight, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-
 
 export default function LoginScreen() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -11,35 +9,55 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className="flex-1 bg-black">
-        <View className="flex-1 items-center px-6">
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+        <View style={{ flex: 1, alignItems: 'center', paddingHorizontal: 24 }}>
           <Image
-            className="w-[135px] h-[130px] mt-[93px]"
+            style={{ width: 135, height: 130, marginTop: 93 }}
             source={require("../assets/Icono.png")}
           />
-          <Text className="text-white text-[24px] mt-[32px]">Guide X</Text>
-          <Text className="text-white text-[40px] mt-16">Welcome!</Text>
+          <Text style={{ color: 'white', fontSize: 24, marginTop: 32 }}>Guide X</Text>
+          <Text style={{ color: 'white', fontSize: 40, marginTop: 64 }}>Welcome!</Text>
 
-          <View className="w-full mt-16">
-            <Text className="text-white text-sm mb-2">USERNAME</Text>
+          <View style={{ width: '100%', marginTop: 64 }}>
+            <Text style={{ color: 'white', fontSize: 14, marginBottom: 8 }}>USERNAME</Text>
             <TextInput
-              className="w-full h-[50px] bg-gray-800 text-white text-base px-4 rounded-lg border border-gray-700"
+              style={{
+                width: '100%',
+                height: 50,
+                backgroundColor: '#2d2d2d',
+                color: 'white',
+                fontSize: 16,
+                paddingHorizontal: 16,
+                borderRadius: 8,
+                borderColor: '#474747',
+                borderWidth: 1,
+              }}
               placeholder="Enter your username"
               placeholderTextColor="rgba(255, 255, 255, 0.2)"
             />
           </View>
 
-          <View className="w-full mt-6">
-            <Text className="text-white text-sm mb-2">PASSWORD</Text>
-            <View className="relative">
+          <View style={{ width: '100%', marginTop: 24 }}>
+            <Text style={{ color: 'white', fontSize: 14, marginBottom: 8 }}>PASSWORD</Text>
+            <View style={{ position: 'relative' }}>
               <TextInput
-                className="w-full h-[50px] bg-gray-800 text-white text-base px-4 rounded-lg border border-gray-700"
+                style={{
+                  width: '100%',
+                  height: 50,
+                  backgroundColor: '#2d2d2d',
+                  color: 'white',
+                  fontSize: 16,
+                  paddingHorizontal: 16,
+                  borderRadius: 8,
+                  borderColor: '#474747',
+                  borderWidth: 1,
+                }}
                 placeholder="Enter your password"
                 placeholderTextColor="rgba(255, 255, 255, 0.2)"
                 secureTextEntry={!passwordVisible}
               />
               <TouchableHighlight
-                className="absolute top-4 right-4 left-[335px]"
+                style={{ position: 'absolute', top: 12, right: 16 }}
                 onPress={() => setPasswordVisible(!passwordVisible)}
               >
                 <Icon
@@ -49,16 +67,26 @@ export default function LoginScreen() {
                 />
               </TouchableHighlight>
             </View>
-            <TouchableHighlight className="mt-2 self-end">
-              <Text className="text-gray-400 text-sm">Forgot Password?</Text>
+            <TouchableHighlight style={{ marginTop: 8, alignSelf: 'flex-end' }}>
+              <Text style={{ color: '#A3A3A3', fontSize: 14 }}>Forgot Password?</Text>
             </TouchableHighlight>
           </View>
 
           <TouchableHighlight
-          className="w-full h-[65px] bg-gray-800 text-white text-base justify-center items-center rounded-2xl border border-[#ffffff96] mt-14"
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text className="text-white text-2xl">Login</Text>
+            style={{
+              width: '100%',
+              height: 65,
+              backgroundColor: '#2d2d2d',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 16,
+              borderColor: 'rgba(255, 255, 255, 0.59)',
+              borderWidth: 1,
+              marginTop: 56,
+            }}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={{ color: 'white', fontSize: 24 }}>Login</Text>
           </TouchableHighlight>
         </View>
       </SafeAreaView>

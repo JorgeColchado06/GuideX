@@ -8,13 +8,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import NavigationBar from './components/navigationBar.js'
 import LoginScreen from './views/login.js'
+import UserScreen from './views/usuario.js'
+import HistoryScreen from './views/historial.js';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Map">
+      <Stack.Navigator initialRouteName="User">
         <Stack.Screen 
           name="Map" 
           component={MapScreen} 
@@ -22,6 +24,14 @@ export default function App() {
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
+        />
+        <Stack.Screen 
+          name="User" 
+          component={UserScreen} 
+        />
+         <Stack.Screen 
+          name="History" 
+          component={HistoryScreen} 
         />
       </Stack.Navigator>
     </NavigationContainer>
