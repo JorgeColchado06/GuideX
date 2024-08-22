@@ -1,45 +1,74 @@
-
-import { View, Text, SafeAreaView, Image, TouchableHighlight, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableHighlight, TextInput, Keyboard, TouchableWithoutFeedback, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Login } from '../api.js'
 
-
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const navigation = useNavigation();
+  const [user, setUser] = useState({
+    "username": "",
+    "pass": ""
+  })
+
+  const handleChange = (name, value) => {
+    setUser({... user, [name]: value})
+    console.log(user)
+  }
+
+  const handleLogin = async () => {
+    console.log(user);
+    try {
+        const log = await Login(user);
+        if (log) {
+            navigation.navigate('Map');
+        } else {
+            console.log('Tas mal vato');
+            Alert.alert(
+                "Datos incorrectos",
+                "El usuario o la contraseña no son correctos.",
+                [{ text: "OK" }]
+            );
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className="flex-1 bg-black">
-        <View className="flex-1 items-center px-6">
+      <SafeAreaView style={styles.safeAreaView}>
+        <KeyboardAwareScrollView>
+        <View style={styles.container}>
           <Image
-            className="w-[135px] h-[130px] mt-[93px]"
+            style={styles.image}
             source={require("../assets/Icono.png")}
           />
-          <Text className="text-white text-[24px] mt-[32px]">Guide X</Text>
-          <Text className="text-white text-[40px] mt-16">Welcome!</Text>
+          <Text style={styles.title}>Guide X</Text>
+          <Text style={styles.welcome}>Welcome!</Text>
 
-          <View className="w-full mt-16">
-            <Text className="text-white text-sm mb-2">USERNAME</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>USERNAME</Text>
             <TextInput
-              className="w-full h-[50px] bg-gray-800 text-white text-base px-4 rounded-lg border border-gray-700"
+              style={styles.input}
               placeholder="Enter your username"
               placeholderTextColor="rgba(255, 255, 255, 0.2)"
+              onChangeText={(text) => handleChange('username', text)}
             />
           </View>
 
-          <View className="w-full mt-6">
-            <Text className="text-white text-sm mb-2">PASSWORD</Text>
-            <View className="relative">
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>PASSWORD</Text>
+            <View style={styles.passwordContainer}>
               <TextInput
-                className="w-full h-[50px] bg-gray-800 text-white text-base px-4 rounded-lg border border-gray-700"
+                style={styles.input}
                 placeholder="Enter your password"
                 placeholderTextColor="rgba(255, 255, 255, 0.2)"
                 secureTextEntry={!passwordVisible}
+                onChangeText={(text) => handleChange('pass', text)}
               />
               <TouchableHighlight
-                className="absolute top-4 right-4 left-[335px]"
+                style={styles.eyeIconContainer}
                 onPress={() => setPasswordVisible(!passwordVisible)}
               >
                 <Icon
@@ -49,19 +78,96 @@ export default function LoginScreen() {
                 />
               </TouchableHighlight>
             </View>
-            <TouchableHighlight className="mt-2 self-end">
-              <Text className="text-gray-400 text-sm">Forgot Password?</Text>
-            </TouchableHighlight>
           </View>
 
           <TouchableHighlight
-          className="w-full h-[65px] bg-gray-800 text-white text-base justify-center items-center rounded-2xl border border-[#ffffff96] mt-14"
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text className="text-white text-2xl">Login</Text>
+            style={styles.loginButton}
+            onPress={handleLogin}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
           </TouchableHighlight>
         </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  image: {
+    width: 135,
+    height: 130,
+    marginTop: 93,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
+    marginTop: 32,
+  },
+  welcome: {
+    color: 'white',
+    fontSize: 40,
+    marginTop: 64,
+  },
+  inputContainer: {
+    width: '100%',
+    marginTop: 24,
+  },
+  label: {
+    color: 'white',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#333333',
+    color: 'white',
+    fontSize: 16,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderColor: '#4d4d4d',
+    borderWidth: 1,
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  eyeIconContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 16,
+  },
+  forgotPassword: {
+    marginTop: 8,
+    alignSelf: 'flex-end',
+  },
+  forgotPasswordText: {
+    color: '#b3b3b3',
+    fontSize: 14,
+  },
+  loginButton: {
+    width: '100%',
+    height: 65,
+    backgroundColor: '#333333',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderColor: '#ffffff96',
+    borderWidth: 1,
+    marginTop: 56,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 24,
+  },
+});
+
