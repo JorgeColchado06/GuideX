@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Polyline} from 'react-native-maps';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import NavigationBar from '../components/navigationBar.js'
+import NavigationBar from '../components/navigationBar';
 
 export default function MapScreen() {
   const [location, setLocation] = useState({
@@ -52,7 +52,7 @@ export default function MapScreen() {
           >
             <Marker
               coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-              title="Selected Location"
+              title="You"
             />
           </MapView>
           
