@@ -51,8 +51,6 @@ export default function UserScreen() {
             )}
           </View>
         ))}
-
-        {/* Barra de navegación */}
       </View>
       <NavigationBar />
     </SafeAreaView>
