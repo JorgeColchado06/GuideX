@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './views/login.js'
-import UserScreen from './views/usuario.js'
+import MapViewDirections from 'react-native-maps-directions';
+import LoginScreen from './views/login.js';
+import UserScreen from './views/usuario.js';
 import HistoryScreen from './views/historial.js';
 import HomeScreen from './views/home.js';
 import NavigationBar from './components/navigationBar.js';
-
 
 const Stack = createStackNavigator();
 export const userContext = React.createContext();
@@ -49,14 +48,11 @@ export default function App() {
         </NavigationContainer>
       </userContext.Provider>
   );
+}
 
 function MapScreen() {
-  const [location, setLocation] = useState({
-    latitude: 24.0232,
-    longitude: -104.6759,
-    latitudeDelta: 0.015,
-    longitudeDelta: 0.0121,
-  });
+  const [location, setLocation] = useState(null);
+  const [destination, setDestination] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -78,79 +74,83 @@ function MapScreen() {
 
   const handlePlaceSelect = (data, details) => {
     const { lat, lng } = details.geometry.location;
-    setLocation({
+    setDestination({
       latitude: lat,
       longitude: lng,
-      latitudeDelta: 0.015,
-      longitudeDelta: 0.0121,
     });
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className="flex-1 bg-black">
-          <MapView
-            style={{ flex: 1 }}
-            region={location}
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+        <MapView
+          style={{ flex: 1 }}
+          region={location}
+          showsUserLocation={true}
+        >
+          {location && destination && (
+            <>
+              <Marker coordinate={destination} title="Destination" />
+              <MapViewDirections
+                origin={location}
+                destination={destination}
+                apikey="AIzaSyDddURt1vWEhQN0cfCe2wUf9LPaaHJNdIU"
+                strokeWidth={5}
+                strokeColor="blue"
+              />
+            </>
+          )}
+        </MapView>
+
+        <GooglePlacesAutocomplete
+          placeholder="Search"
+          fetchDetails={true}
+          onPress={handlePlaceSelect}
+          query={{
+            key: "AIzaSyDddURt1vWEhQN0cfCe2wUf9LPaaHJNdIU",
+            language: "en",
+          }}
+          styles={{
+            textInputContainer: {
+              paddingHorizontal: 0,
+              marginTop: 2,
+            },
+            textInput: {
+              backgroundColor: "#333",
+              color: "#fff",
+              borderRadius: 8,
+              paddingVertical: 12,
+              paddingHorizontal: 10,
+              padding: 4,
+            },
+            predefinedPlacesDescription: {
+              color: "#1faadb",
+            },
+          }}
+        />
+
+        <View style={{ backgroundColor: "#121111", padding: 20 }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#333",
+              padding: 15,
+              borderRadius: 10,
+              alignItems: "center",
+            }}
+            onPress={() => {
+              if (destination) {
+                Alert.alert("Ruta Iniciada", "Se ha iniciado la ruta hacia tu destino.");
+              } else {
+                Alert.alert("Sin destino", "Selecciona un destino para iniciar la ruta.");
+              }
+            }}
           >
-            <Marker
-              coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-              title="Selected Location"
-            />
-          </MapView>
-
-          <View className="bg-[#121111] p-4" style={{paddingBottom: 100}}>
-          <KeyboardAwareScrollView
-              contentContainerStyle={{ flexGrow: 1 }}
-              extraHeight={150}
-              enableOnAndroid={true}
-            >
-            <GooglePlacesAutocomplete
-              placeholder="Search"
-              fetchDetails={true}
-              onPress={handlePlaceSelect}
-              query={{
-                key: 'AIzaSyDddURt1vWEhQN0cfCe2wUf9LPaaHJNdIU',
-                language: 'en',
-              }}
-              onSubmitEditing={handlePlaceSelect} // Maneja la búsqueda al presionar "Intro"
-              styles={{
-                textInputContainer: {
-                  paddingHorizontal: 0,
-                },
-                textInput: {
-                  backgroundColor: '#333',
-                  color: '#fff',
-                  borderRadius: 8,
-                  paddingVertical: 12,
-                  paddingHorizontal: 10,
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb',
-                },
-              }}
-            />
-            <View className="mt-4">
-              <View className="flex-row justify-between mb-4">
-                <Text className="text-white">Recents</Text>
-                <Text className="text-gray-400">Popular</Text>
-              </View>
-
-              <TouchableOpacity className="bg-[#232323] rounded-xl p-4 mb-4">
-                <Text className="text-white text-lg">Paseo Durango</Text>
-                <Text className="text-gray-400">Victoria De Durango, Durango - 4 km</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity className="bg-[#232323] rounded-xl p-4">
-                <Text className="text-white text-lg">Central Camionera</Text>
-                <Text className="text-gray-400">Col del Maestro, 34240 Durango, Dgo - 2 km</Text>
-              </TouchableOpacity>
-            </View>
-           
-        </KeyboardAwareScrollView>
+            <Text style={{ color: "#fff", fontSize: 18 }}>Empezar Ruta</Text>
+          </TouchableOpacity>
         </View>
-        <NavigationBar/>
+
+        <NavigationBar />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
-}}
+}
