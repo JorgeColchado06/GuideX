@@ -3,7 +3,6 @@ import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, TouchableWithoutF
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapViewDirections from 'react-native-maps-directions';
