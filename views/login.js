@@ -1,8 +1,9 @@
 import { View, Text, SafeAreaView, Image, TouchableHighlight, TextInput, Keyboard, TouchableWithoutFeedback, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Login } from '../api.js'
+import { userContext } from '../App.js';
 
 export default function LoginScreen({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -10,6 +11,14 @@ export default function LoginScreen({ navigation }) {
     "username": "",
     "pass": ""
   })
+  const { setUserID } = useContext(userContext);
+
+  const clearInputs = () => {
+    setUser({
+      "username": "",
+      "pass": ""
+    })
+  }
 
   const handleChange = (name, value) => {
     setUser({... user, [name]: value})
@@ -21,7 +30,11 @@ export default function LoginScreen({ navigation }) {
     try {
         const log = await Login(user);
         if (log) {
-            navigation.navigate('Map');
+            const id_user = log[0].id
+            setUserID(id_user)
+            console.log('Este es el valor del contexto : ', setUserID);
+            clearInputs();
+            navigation.navigate('User');
         } else {
             console.log('Tas mal vato');
             Alert.alert(
@@ -50,6 +63,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>USERNAME</Text>
             <TextInput
+              value={user.username}
               style={styles.input}
               placeholder="Enter your username"
               placeholderTextColor="rgba(255, 255, 255, 0.2)"
@@ -61,6 +75,7 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.label}>PASSWORD</Text>
             <View style={styles.passwordContainer}>
               <TextInput
+                value={user.pass}
                 style={styles.input}
                 placeholder="Enter your password"
                 placeholderTextColor="rgba(255, 255, 255, 0.2)"

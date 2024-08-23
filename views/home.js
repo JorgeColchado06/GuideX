@@ -1,25 +1,36 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationBar from '../components/navigationBar';
+import { useNavigation } from '@react-navigation/native';
+import { userContext } from '../App';
+import { getUser } from '../api';
 
-export default function HomeScreen({ navigation }) {
-  // Función que maneja la navegación al presionar la imagen o el nombre
-  const handleProfilePress = () => {
-    // Aquí puedes navegar a la pantalla deseada
-    navigation.navigate('ProfileScreen'); // Cambia 'ProfileScreen' por la pantalla a la que quieres navegar
-  };
+export default function HomeScreen() {
+
+  const { userID } = useContext(userContext);
+  const [user, setUser] = useState([])
+  const navigation = useNavigation();
+
+  const handleUser = async (userId) => {
+    const data = await getUser(userID);
+    setUser(data);
+  } 
+
+  useEffect(() => {
+    handleUser(userID);
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         {/* Perfil */}
-        <TouchableOpacity style={styles.profileContainer}>
+        <TouchableOpacity style={styles.profileContainer} onPress={() => navigation.navigate('User')}>
           <Image
             style={styles.profileImage}
             source={require('../assets/perfil.png')}
           />
-          <Text style={styles.profileName}>Marcus</Text>
+          <Text style={styles.profileName}>{user.username}</Text>
         </TouchableOpacity>
 
         {/* Imagen del coche */}
@@ -67,7 +78,7 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       {/* Menú de navegación */}
-      <NavigationBar />
+      <NavigationBar/>
     </SafeAreaView>
   );
 }
@@ -87,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 45,
   },
   profileImage: {
     width: 40,

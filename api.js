@@ -1,8 +1,8 @@
-const API = 'http://192.168.1.68:3000'
+const API = 'http://192.168.1.68:3000'//AQUI PONES LA IP DE TU COMPU 
 
 export const Login = async (user) => {
     try {
-        const res = await fetch(`http://192.168.1.68:3000/login`, {
+        const res = await fetch(`${API}/login`, {
             method: 'POST',
             headers: { 
                 Accept: 'application/json', 
@@ -24,10 +24,50 @@ export const Login = async (user) => {
             return false;
         }
 
-        return data ? true : false;
+        return data;
 
     } catch (error) {
         console.error('Error en la solicitud:', error);
         return false;
     }
 };
+
+export const getUser = async (userId) => {
+    try{
+        const res = await fetch(`${API}/user/${userId}`);
+        return await res.json();
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+
+export const getCar = async (userId) => {
+    try{
+        const res = await fetch(`${API}/car/${userId}`);
+        return await res.json();
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+
+export const getHistory = async (userId) => {
+    try{
+        const res = await fetch(`${API}/history/${userId}`);
+        return await res.json();
+    }   
+    catch(e){
+        console.log(e)
+    }
+}
+
+export const getFavorites = async (userId) => {
+    try{
+        const res = await fetch(`${API}/favorites/${userId}`);
+        return await res.json();
+    }
+    catch(e){
+        console.log(e)
+    }
+}

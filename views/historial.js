@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, SafeAreaView, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationBar from '../components/navigationBar.js'
+import { userContext } from '../App.js';
+import { getUser } from '../api.js';
 
 
 export default function HistoryScreen() {
+  const [user, setUser] = useState([])
+  const { userID } = useContext(userContext);
+
+  const handleUser = async (userId) => {
+    const data = await getUser(userId);
+    setUser(data);
+  }
+
+  useEffect(() => {
+    handleUser(userID);
+  }, [])
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#121111' }}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -13,7 +27,7 @@ export default function HistoryScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 46, marginLeft: 31 }}>
             <View>
               <Text style={{ color: 'white', fontSize: 41, lineHeight: 52, fontFamily: 'Allerta' }}>
-                Marcus{'\n'}Gordon
+                {user.username}
               </Text>
             </View>
             <Image

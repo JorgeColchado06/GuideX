@@ -14,34 +14,40 @@ import NavigationBar from './components/navigationBar.js';
 
 
 const Stack = createStackNavigator();
+export const userContext = React.createContext();
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false}}>
-      <Stack.Screen 
-          name="Map" 
-          component={MapScreen} 
-        />
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-        />
-        <Stack.Screen 
-          name="Home" 
-          component={HomeScreen} 
-        />
-        <Stack.Screen 
-          name="User" 
-          component={UserScreen} 
-        />
-         <Stack.Screen 
-          name="History" 
-          component={HistoryScreen} 
-        />
 
-      </Stack.Navigator>
-    </NavigationContainer>
+  const [ userID, setUserID ] = useState(null)
+
+  return (
+    <userContext.Provider value={{ userID, setUserID }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false}}>
+        <Stack.Screen 
+            name="Map" 
+            component={MapScreen} 
+          />
+          <Stack.Screen 
+            name="Login" 
+            component={LoginScreen} 
+          />
+          <Stack.Screen 
+            name="Home" 
+            component={HomeScreen} 
+          />
+          <Stack.Screen 
+            name="User" 
+            component={UserScreen} 
+          />
+           <Stack.Screen 
+            name="History" 
+            component={HistoryScreen} 
+          />
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </userContext.Provider>
   );
 
 function MapScreen() {

@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationBar from '../components/navigationBar.js';
+import { getUser } from '../api.js'
+import { userContext } from '../App.js';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function UserScreen() {
+  const [ user, setUser ] = useState([])
+  const { userID } = useContext(userContext)
+  const navigation = useNavigation();
+
+  const handleUser = async (userId) => {
+    const data = await getUser(userId);
+    setUser(data);
+  }
+
+  useEffect(() => {
+    handleUser(userID);
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#121111' }}>
       <View style={{ width: 430, height: 932, alignSelf: 'center', overflow: 'hidden' }}>
         <View style={{ marginTop: 46, marginLeft: 31 }}>
           <Text style={{ color: '#ffffff', fontSize: 41, lineHeight: 52, fontFamily: 'Allerta' }}>
-            Marcus{'\n'}Gordon
+            {user.username}
           </Text>
           <Image
             style={{ width: 110, height: 111, position: 'absolute', top: 0, left: 236 }}
@@ -19,13 +36,13 @@ export default function UserScreen() {
 
         {/* Botones de opciones */}
         {[
-          { icon: 'map-marker', text: 'Travel', subText: 'Select Destination: Central Camionera 2 km' },
-          { icon: 'history', text: 'History', subText: 'Last Trip: Central Camionera' },
-          { icon: 'cog', text: 'Settings' },
-          { icon: 'logout', text: 'Log Out' },
+          { icon: 'map-marker', text: 'Travel', subText: 'Select Destination: Central Camionera 2 km', onPress: () => navigation.navigate('Map') },
+          { icon: 'history', text: 'History', subText: 'Last Trip: Central Camionera', onPress: () => navigation.navigate('History') },
+          { icon: 'logout', text: 'Log Out', onPress: () => navigation.navigate('Login') },
         ].map((item, index) => (
-          <View
+          <TouchableOpacity
             key={index}
+            onPress={item.onPress}
             style={{
               width: 378,
               height: 71,
@@ -49,10 +66,10 @@ export default function UserScreen() {
                 {item.subText}
               </Text>
             )}
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
-      <NavigationBar />
+      <NavigationBar/>
     </SafeAreaView>
   );
 }
